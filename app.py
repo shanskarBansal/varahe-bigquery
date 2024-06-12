@@ -9,10 +9,14 @@ import requests
 from google.oauth2 import service_account
 import json
 
-# Load the service account credentials from Streamlit secrets
-service_account_info = json.loads(st.secrets["bigquery_service_account"])
+try:
+    service_account_info = json.loads(st.secrets["bigquery_service_account"])
+    credentials = service_account.Credentials.from_service_account_info(service_account_info)
+except json.JSONDecodeError as e:
+    st.error("Failed to decode JSON credentials. Check the format.")
+except google.auth.exceptions.GoogleAuthError as e:
+    st.error("Authentication failed. Check the credentials.")
 
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
 client = bigquery.Client(credentials=credentials, project=credentials.project_id)
 
 HUNTER_API_KEY = "f1c95af76fd9526e60ec1cc90b36199c558a7f54"
