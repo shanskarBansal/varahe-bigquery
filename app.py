@@ -172,7 +172,7 @@ if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
 if st.session_state['logged_in']:
-    st.image('C:/Users/KIIT/Downloads/stimage.png', width=200) 
+    st.image('https://media.licdn.com/dms/image/C4D0BAQHxlx31iRVpcQ/company-logo_200_200/0/1654155578017?e=1726099200&v=beta&t=41pCBzTxlFnZG43IlklTbQpRnirE8szdB27p8zN2HFg', width=200) 
     st.title('BigQuery Data Editor')
 
     table_id = st.sidebar.selectbox('Select Table', tuple(table_configurations.keys()))
