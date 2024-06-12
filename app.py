@@ -93,7 +93,7 @@ def validate_email_exists(email):
     url = f"https://api.hunter.io/v2/email-verifier?email={email}&api_key={HUNTER_API_KEY}"
     response = requests.get(url)
     data = response.json()
-    return data.get('data', {}).get('result') == 'deliverable'
+    return data.get('data', {}).get('result') == 'deliverable' or 'risky'
 
 def is_varaheanalytics_email(email):
     return email.split('@')[1] == 'varaheanalytics.com'
