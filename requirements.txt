@@ -2,6 +2,4 @@ streamlit
 pandas
 google-cloud-bigquery
 google-auth
-hashlib
-re
 requests
