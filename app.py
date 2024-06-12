@@ -5,19 +5,27 @@ import pandas as pd
 import hashlib
 import re
 import requests
-
-from google.oauth2 import service_account
+import streamlit as st
+import json
+from google.auth.exceptions import GoogleAuthError  # Import specific exceptions
 import json
 
 try:
+    # Assuming you load the JSON from Streamlit secrets
     service_account_info = json.loads(st.secrets["bigquery_service_account"])
     credentials = service_account.Credentials.from_service_account_info(service_account_info)
 except json.JSONDecodeError as e:
-    st.error("Failed to decode JSON credentials. Check the format.")
-except google.auth.exceptions.GoogleAuthError as e:
-    st.error("Authentication failed. Check the credentials.")
+    st.error(f"Failed to decode JSON credentials. Check the format: {str(e)}")
+except GoogleAuthError as e:  # Use the specific import
+    st.error(f"Authentication failed. Check the credentials: {str(e)}")
+except Exception as e:
+    st.error(f"An unexpected error occurred: {str(e)}")
 
-client = bigquery.Client(credentials=credentials, project=credentials.project_id)
+# Ensure credentials are set before creating a client
+if 'credentials' in locals() and credentials:
+    client = bigquery.Client(credentials=credentials, project=credentials.project_id)
+else:
+    st.error("Google Cloud credentials are not set up correctly.")
 
 HUNTER_API_KEY = "f1c95af76fd9526e60ec1cc90b36199c558a7f54"
 
