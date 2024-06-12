@@ -11,7 +11,7 @@ from google.auth.exceptions import GoogleAuthError  # Import specific exceptions
 import json
 
 
-service_account_info = json.loads(st.secrets["bigquery_service_account"])
+service_account_info = st.secrets["bigquery_service_account"]
 
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 client = bigquery.Client(credentials=credentials, project=credentials.project_id)
