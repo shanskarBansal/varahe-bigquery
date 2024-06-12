@@ -217,7 +217,7 @@ if st.session_state['logged_in']:
     st.sidebar.markdown("---")
     st.sidebar.markdown("© Varahe Analytics Private Limited")
 else:
-    st.sidebar.image('C:/Users/KIIT/Downloads/stimage.png', width=200)
+    st.sidebar.image('https://media.licdn.com/dms/image/C4D0BAQHxlx31iRVpcQ/company-logo_200_200/0/1654155578017?e=1726099200&v=beta&t=41pCBzTxlFnZG43IlklTbQpRnirE8szdB27p8zN2HFg', width=200)
     choice = st.sidebar.selectbox("Select Action", ["Login", "Register", "Forgot Password"])
     if choice == "Login":
         login()
