@@ -3,3 +3,6 @@ pandas
 google-cloud-bigquery
 google-auth
 requests
+pandas
+db-dtypes
+pyarrow
