@@ -10,10 +10,10 @@ import json
 from google.auth.exceptions import GoogleAuthError  # Import specific exceptions
 import json
 
-
-service_account_info = st.secrets["bigquery_service_account"]
-
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+key_path = json.loads(st.secrets["bigquery_service_account"])
+credentials = service_account.Credentials.from_service_account_file(
+    key_path, scopes=["https://www.googleapis.com/auth/cloud-platform"]
+)
 client = bigquery.Client(credentials=credentials, project=credentials.project_id)
 
 HUNTER_API_KEY = "f1c95af76fd9526e60ec1cc90b36199c558a7f54"
