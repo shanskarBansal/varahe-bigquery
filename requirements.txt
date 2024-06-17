@@ -6,3 +6,4 @@ requests
 pandas
 db-dtypes
 pyarrow
+streamlit-aggrid
