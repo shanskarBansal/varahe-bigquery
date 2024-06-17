@@ -1,3 +1,6 @@
+# ------------------------------------© SHANSKAR BANSAL ©------------------------------------# 
+# -----------------------------        streamlit-aggrid       -------------------------------#
+
 import streamlit as st
 from google.cloud import bigquery
 from google.oauth2 import service_account
@@ -5,10 +8,7 @@ import pandas as pd
 import hashlib
 import re
 import requests
-import streamlit as st
-import json
-from google.auth.exceptions import GoogleAuthError  # Import specific exceptions
-import json
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 key_path = st.secrets["bigquery_service_account"]
 credentials = service_account.Credentials.from_service_account_info(
@@ -21,7 +21,8 @@ HUNTER_API_KEY = "f1c95af76fd9526e60ec1cc90b36199c558a7f54"
 
 table_configurations = {
     'comms-engineering.FACEBOOK_DATASET.FB_PAGE_TABLE': {'date_column': 'Date', 'date_format': '%d-%m-%Y'},
-    'comms-engineering.FACEBOOK_DATASET.FB_POST_TABLE': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'}
+    'comms-engineering.login.hello': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'},
+    'comms-engineering.login.hellos': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'}
 }
 
 def load_data(table_id, start_date, end_date):
@@ -38,7 +39,8 @@ def load_data(table_id, start_date, end_date):
 def update_data(updated_df, table_id):
     config = table_configurations[table_id]
     if config['date_column'] in updated_df.columns:
-        updated_df[config['date_column']] = pd.to_datetime(updated_df[config['date_column']]).dt.strftime(config['date_format'])
+        updated_df[config['date_column']] = pd.to_datetime(updated_df[config['date_column']]).dt.strftime(config['date_format'])        
+    updated_df.reset_index(drop=True, inplace=True)
     job = client.load_table_from_dataframe(updated_df, table_id, job_config=bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE"))
     job.result()
 
@@ -93,7 +95,7 @@ def validate_email_exists(email):
     url = f"https://api.hunter.io/v2/email-verifier?email={email}&api_key={HUNTER_API_KEY}"
     response = requests.get(url)
     data = response.json()
-    return data.get('data', {}).get('result') == 'deliverable' or 'risky'
+    return data.get('data', {}).get('result') == 'deliverable' 
 
 def is_varaheanalytics_email(email):
     return email.split('@')[1] == 'varaheanalytics.com'
@@ -122,7 +124,6 @@ def register_user(email, password):
     else:
         st.success("User registered successfully!")
 
-# Login and Registration
 def login():
     st.subheader("Login")
     email = st.text_input("Email")
@@ -184,11 +185,46 @@ if st.session_state['logged_in']:
         st.subheader('Load and Edit Data')
         if st.sidebar.button('Load Data'):
             df = load_data(table_id, start_date, end_date)
+            if 'Content_Produced_By' not in df.columns:
+                df['Content_Produced_By'] = 'Select' 
+            df['Content_Produced_By'] = pd.Categorical(df['Content_Produced_By'], categories=['varahe', 'party'])
+
+            if 'Content_Category' not in df.columns:
+                df['Content_Category'] = 'Select'
+            df['Content_Category'] = pd.Categorical(df['Content_Category'], categories=['Anti-Modi', 'Pro-Modi'])
+
+            if 'Content_Nature' not in df.columns:
+                df['Content_Nature'] = 'Select'
+            df['Content_Nature'] = pd.Categorical(df['Content_Nature'], categories=['Positive', 'Negative'])
+
             st.session_state['df'] = df
 
         if 'df' in st.session_state:
-            st.markdown("### Data Editor")
-            edited_df = st.data_editor(st.session_state['df'], key='data_editor')
+            gb = GridOptionsBuilder.from_dataframe(st.session_state['df'])
+
+            gb.configure_column("Content_Produced_By", editable=True, cellEditor='agSelectCellEditor',
+                                cellEditorParams={'values': ['varahe', 'party']})
+            gb.configure_column("Content_Category", editable=True, cellEditor='agSelectCellEditor',
+                                cellEditorParams={'values': ['Anti-Modi', 'Pro-Modi']})
+            gb.configure_column("Content_Nature", editable=True, cellEditor='agSelectCellEditor',
+                                cellEditorParams={'values': ['Positive', 'Negative']})
+
+            grid_options = gb.build()
+
+            grid_response = AgGrid(
+                st.session_state['df'],
+                gridOptions=grid_options,
+                enable_enterprise_modules=True,
+                allow_unsafe_jscode=True,  
+                update_mode=GridUpdateMode.VALUE_CHANGED,  
+                fit_columns_on_grid_load=False,
+                height=300,  
+                width='100%'
+            )
+
+            st.session_state['df'] = grid_response['data']
+            st.markdown("### Updated Data")
+            st.dataframe(st.session_state['df']) 
 
     elif operation == 'Insert New Row':
         st.subheader('Insert New Row')
