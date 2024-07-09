@@ -21,8 +21,8 @@ HUNTER_API_KEY = "f1c95af76fd9526e60ec1cc90b36199c558a7f54"
 
 table_configurations = {
     'comms-engineering.FACEBOOK_DATASET.FB_PAGE_TABLE': {'date_column': 'Date', 'date_format': '%d-%m-%Y'},
-    'comms-engineering.login.hello': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'},
-    'comms-engineering.login.hellos': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'}
+    'comms-engineering.FACEBOOK_DATASET.FB_POST_TABLE': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'},
+    'comms-engineering.FACEBOOK_DATASET.FB_POST_WEEK_TABLE': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'}
 }
 
 def load_data(table_id, start_date, end_date):
