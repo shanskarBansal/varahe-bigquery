@@ -25,6 +25,7 @@ table_configurations = {
     'comms-engineering.FACEBOOK_DATASET.FB_POST_TABLE': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'},
     'comms-engineering.FACEBOOK_DATASET.FB_POST_WEEK_TABLE': {'date_column': 'Publish_Time', 'date_format': '%Y-%m-%d'},
     'comms-engineering.FACEBOOK_DATASET.FB_PAGE_WEEK_TABLE': {'date_column': 'Date', 'date_format': '%d-%m-%Y'},
+    'comms-engineering.FACEBOOK_DATASET.FB_ADS_TABLE': {'date_column': '`Date`', 'date_format': '%Y-%m-%d'}
     
 }
 
